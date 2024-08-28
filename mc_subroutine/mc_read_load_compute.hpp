@@ -161,9 +161,16 @@ class mc_computation
                 std::cout << "h=" << h << std::endl;
 
                 continue;
-            }
+            }// end h
 
+        //read sweep_multiple
+            if(paramCounter==11){
+                iss>>sweep_multiple;
+                paramCounter++;
+                std::cout << "sweep_multiple=" << sweep_multiple << std::endl;
 
+                continue;
+            }//end sweep_multiple
 
         }//end while
 
@@ -234,7 +241,7 @@ public:
     void save_array_to_pickle_one_column(double *ptr, const int& startingInd, std::size_t size,const int & numbersPerRow, const std::string& filename);
     std::string generate_varName(const int &ind,const int &numbersPerRow);
 
-    void execute_mc_one_sweep(std::shared_ptr<double[]>&xVecCurr,std::shared_ptr<double[]>& xVecNext, const int &fls, const int& swp);
+    void execute_mc_one_sweep(std::shared_ptr<double[]>&xVecCurr, double &UCurr,std::shared_ptr<double[]>& xVecNext, const int &fls, const int& swp);
 
     void execute_mc(const std::shared_ptr<double[]> &xVec, const int & sweepInit, const int & flushNum);
 
@@ -280,5 +287,7 @@ public:
     std::ranlux24_base e2;
     std::uniform_real_distribution<> distUnif01;
     std::uniform_int_distribution<int> dist0_2N_minus1;
+
+    int sweep_multiple;
 };
 #endif //MC_READ_LOAD_COMPUTE_HPP

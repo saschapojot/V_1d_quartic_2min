@@ -183,12 +183,12 @@ std::string mc_computation::generate_varName(const int &ind,const int &numbersPe
 }
 
 
-void mc_computation::execute_mc_one_sweep(std::shared_ptr<double[]>&xVecCurr,std::shared_ptr<double[]>& xVecNext, const int &fls, const int& swp)
+void mc_computation::execute_mc_one_sweep(std::shared_ptr<double[]>&xVecCurr, double &UCurr,std::shared_ptr<double[]>& xVecNext, const int &fls, const int& swp)
 {
 
     //next U
     double UNext;
-    double UCurr;
+
     for (int j = 0; j < 2 * N; j++)
     {
         //one mc in sweep
@@ -208,8 +208,8 @@ void mc_computation::execute_mc_one_sweep(std::shared_ptr<double[]>&xVecCurr,std
         }//end of accept-reject
 
     }//end sweep for
-    U_dist_ptr[swp  * varNum +0] = UCurr;
-    std::memcpy(U_dist_ptr.get() + swp * varNum  + 1, xVecCurr.get(), 2 * N * sizeof(double));
+    // U_dist_ptr[swp  * varNum +0] = UCurr;
+    // std::memcpy(U_dist_ptr.get() + swp * varNum  + 1, xVecCurr.get(), 2 * N * sizeof(double));
 
 }
 
@@ -220,16 +220,22 @@ void mc_computation::execute_mc(const std::shared_ptr<double[]> &xVec, const int
 
 
     std::memcpy(xVecCurr.get(), xVec.get(), 2 * N * sizeof(double));
-
+    double UCurr=0;
     int sweepStart = sweepInit;
     for (int fls = 0; fls < flushNum; fls++) {
         const auto tMCStart{std::chrono::steady_clock::now()};
-        for (int swp = 0; swp < sweepToWrite; swp++) {
-            execute_mc_one_sweep(xVecCurr, xVecNext, fls, swp);
-
+        for (int swp = 0; swp < sweepToWrite*sweep_multiple; swp++) {
+            execute_mc_one_sweep(xVecCurr,UCurr, xVecNext, fls, swp);
+            // std::cout<<"swp="<<swp<<std::endl;
+            if(swp%sweep_multiple==0)
+            {
+                int swp_out=swp/sweep_multiple;
+                U_dist_ptr[swp_out  * varNum +0] = UCurr;
+                std::memcpy(U_dist_ptr.get() + swp_out * varNum  + 1, xVecCurr.get(), 2 * N * sizeof(double));
+            }//end save to array
         }//end sweep for
 
-        int sweepEnd = sweepStart + sweepToWrite - 1;
+        int sweepEnd = sweepStart + sweepToWrite*sweep_multiple - 1;
 
         std::string fileNameMiddle = "sweepStart" + std::to_string(sweepStart) + "sweepEnd" + std::to_string(sweepEnd);
         std::string out_U_distPickleFileName_pkl = this->U_dist_dataDir + "/" + fileNameMiddle + ".U_dist.pkl";
