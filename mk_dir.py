@@ -1,5 +1,5 @@
 from pathlib import Path
-from decimal import Decimal
+from decimal import Decimal, getcontext
 
 import numpy as np
 import pandas as pd
@@ -24,13 +24,14 @@ f=float(oneRow.loc["f"])
 d1=float(oneRow.loc["d1"])
 d2=float(oneRow.loc["d2"])
 
+# print(d2)
 
-
-def format_using_decimal(value):
-    # Convert the float to a Decimal
-    value=np.round(value,4)
-    decimal_value = Decimal(value)
-    # Remove trailing zeros and ensure fixed-point notation
+def format_using_decimal(value, precision=10):
+    # Set the precision higher to ensure correct conversion
+    getcontext().prec = precision + 2
+    # Convert the float to a Decimal with exact precision
+    decimal_value = Decimal(str(value))
+    # Normalize to remove trailing zeros
     formatted_value = decimal_value.quantize(Decimal(1)) if decimal_value == decimal_value.to_integral() else decimal_value.normalize()
     return str(formatted_value)
 TVals=[1,2,3,4,5,6]
@@ -63,7 +64,7 @@ def contents_to_conf(k):
     contents=[
         "#This is the configuration file for mc computations\n",
         "\n"
-        "potential_function_name=V_quartic_2min\n",
+        "potential_function_name=V_1d_quartic_2min\n",
         "\n" ,
         "#parameters of coefficients\n",
         "#parameter_row=row0\n",
