@@ -34,8 +34,8 @@ def format_using_decimal(value, precision=10):
     # Normalize to remove trailing zeros
     formatted_value = decimal_value.quantize(Decimal(1)) if decimal_value == decimal_value.to_integral() else decimal_value.normalize()
     return str(formatted_value)
-TVals=[3]
-unitCellNum=5
+TVals=[0.1,0.3,0.5,1,2,3,4,5,6,7,8,9,12,17,22]
+unitCellNum=10
 dataRoot="./dataAll/"
 dataOutDir=dataRoot+"/dataAllUnitCell"+str(unitCellNum)+"/row"+str(rowNum)+"/"
 
@@ -92,11 +92,11 @@ def contents_to_conf(k):
         "\n",
         "#within each flush,  sweep_to_write mc computations are executed\n",
         "\n",
-        "default_flush_num=15\n",
+        "default_flush_num=10\n",
         "\n",
         "h=5e-2\n",
         "\n",
-        "sweep_multiple=10\n"
+        "sweep_multiple=1\n"
 
 
 
