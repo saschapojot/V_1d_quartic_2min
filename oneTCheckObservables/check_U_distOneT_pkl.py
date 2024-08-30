@@ -453,7 +453,7 @@ if (np.max(statVec)<=statThreshhold or np.min(pVec)>=0.01) and numDataPoints>=20
         +"startingFileInd="+str(startingFileInd)+"\n" \
         +"startingVecPosition="+str(startingVecPosition)+"\n" \
         +"newDataPointNum="+str(newDataPointNum)+"\n"
-
+    print(msg)
     with open(summary_U_distFile,"w+") as fptr:
         fptr.writelines(msg)
     exit(0)
@@ -469,6 +469,7 @@ if numDataPoints<200:
 
     continueMsg+="numDataPoints="+str(numDataPoints)+" too low\n"
     continueMsg+="lag="+str(lagMax)+"\n"
+print(continueMsg)
 with open(summary_U_distFile,"w+") as fptr:
     fptr.writelines(continueMsg)
 exit(0)

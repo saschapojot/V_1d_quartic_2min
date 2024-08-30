@@ -1,12 +1,14 @@
 import subprocess
-from decimal import Decimal
+from decimal import Decimal, getcontext
 import signal
 import sys
 #this scrip executes mc by checking statistics
-def format_using_decimal(value):
-    # Convert the float to a Decimal using string conversion to avoid precision issues
+def format_using_decimal(value, precision=4):
+    # Set the precision higher to ensure correct conversion
+    getcontext().prec = precision + 2
+    # Convert the float to a Decimal with exact precision
     decimal_value = Decimal(str(value))
-    # Remove trailing zeros and ensure fixed-point notation
+    # Normalize to remove trailing zeros
     formatted_value = decimal_value.quantize(Decimal(1)) if decimal_value == decimal_value.to_integral() else decimal_value.normalize()
     return str(formatted_value)
 
